@@ -1,21 +1,31 @@
 import * as fs from 'node:fs/promises';
 
-let filename = "config.ini"
+let filename = "config.ini";
 
-fs.access(filename) 
-.then(()=> {
-    console.log("File exists");
-    fs.open(filename, 'r')
-    
-    .then(async(file) => {
-        let result ={};
-        for await (let line of file.readLines()){
+fs.access(filename)
+.then(async () => {
+    try {
+        console.log("File exists and is accessible");
+
+        const file = await fs.open(filename, 'r');
+        let result = {};
+
+        for await (let line of file.readLines()) {
+            if (line.trim() === "") continue; 
             let parts = line.split('=');
-            console.log(`'${parts[0]}'`, `'${parts[1]}'`);
+            if (parts.length < 2) continue; 
+            let key = parts[0].trim();
+            let value = parts.slice(1).join('=').trim();
+            result[key] = value;
+            console.log(`${key} = ${value}`);
         }
+
         file.close();
-    })
+
+    } catch (err) {
+        console.error("Error while reading the file:", err.message);
+    }
 })
- .catch(async (err) => {
-    console.log("File does not exist.");
+.catch(() => {
+    console.log("File does not exist or is not accessible.");
 });
