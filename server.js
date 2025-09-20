@@ -138,15 +138,20 @@ async function makeGroupsHtml() {
 function grpToHtml(grps) {
     let html = "<ul>";
     for (let grp of grps) {
-        html += `<li>${grp.name}`;
-        if (typeof grp.sub != 'undefined' && grp.sub.length > 0) {
-            html += grpToHtml(grp.sub);
+        let hasSub = typeof grp.sub != 'undefined' && grp.sub.length > 0;
+        html += `<li class="group-item">`;
+        if (hasSub) {
+            html += `<span class="toggle">▶</span> ${grp.name}`;
+            html += `<div class="subgroups hidden">${grpToHtml(grp.sub)}</div>`;
+        } else {
+            html += `${grp.name}`;
         }
-        html += '</li>';
+        html += `</li>`;
     }
-    html += '</ul>';
+    html += "</ul>";
     return html;
 }
+
 
 function findParent(arr, parent_id) {
     for (let elem of arr) {

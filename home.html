@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="/css/site.css">
     <link rel="icon" href="/img/logo.jpg" >
 </head>
+<style>
+  .hidden { display: none; }
+  .toggle { cursor: pointer; margin-right: 5px; user-select: none; }
+  .expanded > .toggle { transform: rotate(90deg); display: inline-block; }
+</style>
 <body>
     {{groupsHtml}}
     <h2>Request</h2>
@@ -22,4 +27,18 @@
     <img src="/img/JavaScript-logo.jpg" alt="logo"/>
     <script src="/js/site.js"></script>
     </body>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".group-item .toggle").forEach(toggle => {
+        toggle.addEventListener("click", () => {
+            const parent = toggle.parentElement;
+            const sub = parent.querySelector(".subgroups");
+            if (sub) {
+                sub.classList.toggle("hidden");
+                parent.classList.toggle("expanded");
+            }
+        });
+    });
+});
+</script>
 </html>
