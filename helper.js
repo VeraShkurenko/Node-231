@@ -38,6 +38,11 @@ function getAllowedMimeType(path) {
         case 'jpg':
         case 'jpeg': contentType = "image/jpeg"; break;
         case 'pdf': contentType = "application/pdf"; break;
+        case 'mp3': contentType = "audio/mpeg"; break;
+        case 'wav': contentType = "audio/wav"; break;
+        case 'mp4': contentType = "video/mp4"; break;
+        case 'webm': contentType = "video/webm"; break;
+
     }
     return contentType;
 }
