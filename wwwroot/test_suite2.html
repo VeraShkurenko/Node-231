@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 20px;
+            color: #333;
+        }
+        a {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: goldenrod;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        h1 {
+            color: #444;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            background: goldenrod;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s ease-in-out;
+        }
+        button:hover {
+            background: darkgoldenrod;
+        }
+        #out {
+            margin-top: 20px;
+        }
+        .item {
+            background: #fff;
+            border-left: 4px solid goldenrod;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .key {
+            display: inline-block;
+            font-weight: bold;
+            color: #555;
+            margin-right: 5px;
+        }
+        .value {
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <a href="test_suite.html">Client Controller</a>
+    <h1>Випробування API Feedback Controller</h1>
+    <button onclick="testGet()">GET</button>
+    <button onclick="testPost()">POST</button>
+    <button onclick="testPut()">PUT</button>
+    <button onclick="testPatch()">PATCH</button>
+    <button onclick="testDelete()">DELETE</button>
+    <div id="out"></div>
+    <script>
+        function renderOutput(j) {
+            out.innerHTML = ''
+            for (k in j) {
+                out.innerHTML += `
+                <div class="item">
+                    <span class="key">${k}:</span> 
+                    <span class="value">${j[k]}</span>
+                </div>`
+            }
+        }
+
+        function testGet() {
+            fetch("/api/feedback", {
+                method: "GET",
+                headers: {
+                    "Connection": "close",
+                    "Accept": "application/json"
+                }
+            }).then(r => r.text())
+            .then(j => {
+                out.innerText = j
+            })
+        }
+        function testPost() {
+            fetch("/api/feedback", { method: "POST" })
+            .then(r => r.json())
+            .then(j => renderOutput(j))
+        }
+        function testPut() {
+            fetch("/api/feedback", { method: "PUT" })
+            .then(r => r.json())
+            .then(j => renderOutput(j))
+        }
+        function testPatch() {
+            fetch("/api/feedback", { method: "PATCH" })
+            .then(r => r.json())
+            .then(j => renderOutput(j))
+        }
+        function testDelete() {
+            fetch("/api/feedback", { method: "DELETE" })
+            .then(r => r.json())
+            .then(j => renderOutput(j))
+        }
+    </script>
+</body>
+</html>

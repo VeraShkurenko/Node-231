@@ -5,6 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>node</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #444;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            background: goldenrod;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s ease-in-out;
+        }
+        button:hover {
+            background: darkgoldenrod;
+        }
+        #out {
+            margin-top: 20px;
+        }
+        .item {
+            background: #fff;
+            border-left: 4px solid goldenrod;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .key {
+            display: inline-block;
+            font-weight: bold;
+            color: #555;
+            margin-right: 5px;
+        }
+        .value {
+            color: #222;
+        }
+        .value a {
+            color: goldenrod;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .value a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -12,58 +65,68 @@
     <button onclick="testGo()">GET</button>
 
     <div>
-        <input type="user-name" type="text" /> <br>
-        <input type="user-email" type="email" /> <br>
-        <input type="user-phone" type="tel" /> <br>
+        <input type="text" id="user-name" placeholder="Name"/> <br>
+        <input type="email" id="user-email" placeholder="Email"/> <br>
+        <input type="tel" id="user-phone" placeholder="Phone"/> <br>
         <button onclick="testPost()">POST</button>
     </div>
 
-    <p id="out"></p>
+    <div id="out"></div>
+
     <script>
-        function testPost() {
-            const userName = document.querySelector("input[type='user-name']").value;
-            const userEmail = document.querySelector("input[type='user-email']").value;
-            const userPhone = document.querySelector("input[type='user-phone']").value;
-            const data = { userName, userEmail, userPhone };
-            fetch("/api/client",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(r => {
-                    console.log(r.headers.get("Content-Type"));
-                    if (r.status != 200) {
-                        out.innerText = `Сервер відповід помилкою  ${r.status}`;
-                    }
-                    else {
-                        let ct = r.headers.get("Content-Type");
-                        if (typeof ct == "string" && ct.startsWith("application/json")) {
-                            r.json().then(j => out.innerText = JSON.stringify(j));
-                        }
-                        else{
-                            out.innerText = `Відповідь сервера не є JSON '${ct}'`;
-                        }
-
-                    }
-                })
-
+        function renderOutput(j) {
+            out.innerHTML = ''
+            for (let k in j) {
+                let val = j[k]
+                if (k === "link") {
+                    val = `<a href="${j[k]}">${j[k]}</a>`
+                }
+                out.innerHTML += `
+                <div class="item">
+                    <span class="key">${k}:</span> 
+                    <span class="value">${val}</span>
+                </div>`
+            }
         }
-        function testGo() {
-            fetch("/api/client",
-                {
-                    method: "GET",
-                    headers: {
-                        "Connection": "close",
-                        "Accept": "applicayion/json"
+
+        function testPost() {
+            const userName = document.querySelector("#user-name").value;
+            const userEmail = document.querySelector("#user-email").value;
+            const userPhone = document.querySelector("#user-phone").value;
+            const data = { userName, userEmail, userPhone };
+
+            fetch("/api/client", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(r => {
+                if (r.status != 200) {
+                    out.innerText = `Сервер відповів помилкою ${r.status}`;
+                } else {
+                    let ct = r.headers.get("Content-Type");
+                    if (typeof ct == "string" && ct.startsWith("application/json")) {
+                        r.json().then(j => renderOutput(j));
+                    } else {
+                        out.innerText = `Відповідь сервера не є JSON '${ct}'`;
                     }
-                })
-                .then(r => r.text())
-                .then(j => {
-                    out.innerText = j;
-                });
+                }
+            })
+        }
+
+        function testGo() {
+            fetch("/api/client", {
+                method: "GET",
+                headers: {
+                    "Connection": "close",
+                    "Accept": "application/json"
+                }
+            })
+            .then(r => r.json())
+            .then(j => renderOutput(j))
+            .catch(err => out.innerText = "Помилка: " + err)
         }
     </script>
 </body>
