@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>node</title>
+</head>
+
+<body>
+    <h1>Випробування API</h1>
+    <button onclick="testGo()">GET</button>
+
+    <div>
+        <input type="user-name" type="text" /> <br>
+        <input type="user-email" type="email" /> <br>
+        <input type="user-phone" type="tel" /> <br>
+        <button onclick="testPost()">POST</button>
+    </div>
+
+    <p id="out"></p>
+    <script>
+        function testPost() {
+            const userName = document.querySelector("input[type='user-name']").value;
+            const userEmail = document.querySelector("input[type='user-email']").value;
+            const userPhone = document.querySelector("input[type='user-phone']").value;
+            const data = { userName, userEmail, userPhone };
+            fetch("/api/client",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(r => {
+                    console.log(r.headers.get("Content-Type"));
+                    if (r.status != 200) {
+                        out.innerText = `Сервер відповід помилкою  ${r.status}`;
+                    }
+                    else {
+                        let ct = r.headers.get("Content-Type");
+                        if (typeof ct == "string" && ct.startsWith("application/json")) {
+                            r.json().then(j => out.innerText = JSON.stringify(j));
+                        }
+                        else{
+                            out.innerText = `Відповідь сервера не є JSON '${ct}'`;
+                        }
+
+                    }
+                })
+
+        }
+        function testGo() {
+            fetch("/api/client",
+                {
+                    method: "GET",
+                    headers: {
+                        "Connection": "close",
+                        "Accept": "applicayion/json"
+                    }
+                })
+                .then(r => r.text())
+                .then(j => {
+                    out.innerText = j;
+                });
+        }
+    </script>
+</body>
+
+</html>
