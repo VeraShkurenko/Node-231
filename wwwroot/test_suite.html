@@ -12,9 +12,11 @@
             margin: 20px;
             color: #333;
         }
+
         h1 {
             color: #444;
         }
+
         button {
             margin: 5px;
             padding: 10px 15px;
@@ -26,34 +28,41 @@
             cursor: pointer;
             transition: background 0.2s ease-in-out;
         }
+
         button:hover {
             background: darkgoldenrod;
         }
+
         #out {
             margin-top: 20px;
         }
+
         .item {
             background: #fff;
             border-left: 4px solid goldenrod;
             padding: 12px 15px;
             margin: 10px 0;
             border-radius: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
+
         .key {
             display: inline-block;
             font-weight: bold;
             color: #555;
             margin-right: 5px;
         }
+
         .value {
             color: #222;
         }
+
         .value a {
             color: goldenrod;
             text-decoration: none;
             font-weight: bold;
         }
+
         .value a:hover {
             text-decoration: underline;
         }
@@ -65,9 +74,9 @@
     <button onclick="testGo()">GET</button>
 
     <div>
-        <input type="text" id="user-name" placeholder="Name"/> <br>
-        <input type="email" id="user-email" placeholder="Email"/> <br>
-        <input type="tel" id="user-phone" placeholder="Phone"/> <br>
+        <input type="text" id="user-name" placeholder="Name" /> <br>
+        <input type="email" id="user-email" placeholder="Email" /> <br>
+        <input type="tel" id="user-phone" placeholder="Phone" /> <br>
         <button onclick="testPost()">POST</button>
     </div>
 
@@ -102,18 +111,18 @@
                 },
                 body: JSON.stringify(data)
             })
-            .then(r => {
-                if (r.status != 200) {
-                    out.innerText = `Сервер відповів помилкою ${r.status}`;
-                } else {
-                    let ct = r.headers.get("Content-Type");
-                    if (typeof ct == "string" && ct.startsWith("application/json")) {
-                        r.json().then(j => renderOutput(j));
+                .then(r => {
+                    if (r.status != 200) {
+                        out.innerText = `Сервер відповів помилкою ${r.status}`;
                     } else {
-                        out.innerText = `Відповідь сервера не є JSON '${ct}'`;
+                        let ct = r.headers.get("Content-Type");
+                        if (typeof ct === "string" && /^application\/json(?:\s*;.*)?$/i.test(ct)) {
+                            r.json().then(j => renderOutput(j));
+                        } else {
+                            out.innerText = `Відповідь сервера не є JSON '${ct}'`;
+                        }
                     }
-                }
-            })
+                })
         }
 
         function testGo() {
@@ -124,9 +133,9 @@
                     "Accept": "application/json"
                 }
             })
-            .then(r => r.json())
-            .then(j => renderOutput(j))
-            .catch(err => out.innerText = "Помилка: " + err)
+                .then(r => r.json())
+                .then(j => renderOutput(j))
+                .catch(err => out.innerText = "Помилка: " + err)
         }
     </script>
 </body>

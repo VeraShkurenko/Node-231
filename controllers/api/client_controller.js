@@ -30,7 +30,8 @@ export default class ClientController {
                 response.end()
             }
         })
-        //response.writeHead(200, {
+ 
+    }       //response.writeHead(200, {
         //    'Content-Type': 'application/json'
         //})
         //response.end(JSON.stringify(
@@ -39,7 +40,6 @@ export default class ClientController {
         //        "method": "POST",
         //        "semantic": "Create"
         //    }))
-    }
 
     doPut(request, response, id) {
         response.writeHead(200)
@@ -71,16 +71,8 @@ export default class ClientController {
             }))
     }
 }
-
 function validContentType(str) {
-    if (typeof str != 'string') return false
-
-    const jsonType = 'application/json'
-    if (str.startsWith(jsonType)) {
-        if (str === jsonType || str[jsonType.length] == ';') {
-            return true
-        }
-    }
-
-    return false
+    if (typeof str !== 'string') return false
+    return /^application\/json(?:\s*;.*)?$/i.test(str)
 }
+//application/json; charset=utf-8
