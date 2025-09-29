@@ -133,7 +133,7 @@
                     "Accept": "application/json"
                 }
             })
-                .then(r => r.json())
+                .then(r => r.text())
                 .then(j => renderOutput(j))
                 .catch(err => out.innerText = "Помилка: " + err)
         }
